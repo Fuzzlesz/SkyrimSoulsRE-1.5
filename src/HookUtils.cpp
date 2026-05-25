@@ -1,5 +1,7 @@
 #include "HookUtils.h"
 
+#undef MAX_PATH
+
 namespace
 {
 	struct VtableHookEntry

@@ -333,6 +333,8 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 RCa12768
+/build-16
 
-external/CommonLibSSE
-/build
+buildae/
+
+build/

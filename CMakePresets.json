@@ -1,0 +1,96 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "cmake-dev",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
+        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX /external:W0 $penv{CXXFLAGS}",
+        "CMAKE_CXX_FLAGS_RELEASE": "/O2 /DNDEBUG"
+      },
+      "errors": {
+        "deprecated": true
+      },
+      "warnings": {
+        "deprecated": true,
+        "dev": true
+      }
+    },
+    {
+      "name": "vcpkg",
+      "hidden": true,
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    },
+    {
+      "name": "windows",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+      }
+    },
+    {
+      "name": "vs2022",
+      "hidden": true,
+      "generator": "Visual Studio 17 2022",
+      "toolset": "v143",
+      "architecture": {
+        "strategy": "set",
+        "value": "x64"
+      }
+    },
+    {
+      "name": "vs2026",
+      "hidden": true,
+      "generator": "Visual Studio 18 2026",
+      "toolset": "v145",
+      "architecture": {
+        "strategy": "set",
+        "value": "x64"
+      }
+    },
+    {
+      "name": "se",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build"
+    },
+    {
+      "name": "vs2022-windows-se",
+      "inherits": [
+        "cmake-dev",
+        "vcpkg",
+        "windows",
+        "vs2022",
+        "se"
+      ]
+    },
+    {
+      "name": "vs2026-windows-se",
+      "inherits": [
+        "cmake-dev",
+        "vcpkg",
+        "windows",
+        "vs2026",
+        "se"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "vs2022-windows-se",
+      "configurePreset": "vs2022-windows-se",
+      "configuration": "Release"
+    },
+    {
+      "name": "vs2026-windows-se",
+      "configurePreset": "vs2026-windows-se",
+      "configuration": "Release"
+    }
+  ]
+}

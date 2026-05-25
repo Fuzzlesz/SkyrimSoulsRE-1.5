@@ -2,6 +2,8 @@
 #include "HookUtils.h"
 #include "Util.h"
 
+#undef max
+
 namespace SkyrimSoulsRE
 {
 	bool MagicMenuEx::IsViewingActiveEffects()

@@ -3,9 +3,8 @@
 
 #include "HookUtils.h"
 #include "SkyrimSoulsRE.h"
-#include "Version.h"
 
-constexpr auto MESSAGEBOX_WARNING = 0x00001030L;  // MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL
+ constexpr auto MESSAGEBOX_WARNING = 0x00001030L;  // MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL
 
 namespace
 {
@@ -81,34 +80,58 @@ static void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 	}
 }
 
-extern "C"
+	void InitializeLog()
 {
-	DLLEXPORT SKSE::PluginVersionData SKSEPlugin_Version = []() {
-		SKSE::PluginVersionData v{};
-		v.PluginVersion(REL::Version{ Version::MAJOR, Version::MINOR, Version::PATCH, 0 });
-		v.PluginName(Version::NAME);
-		v.AuthorName(Version::AUTHOR);
-		v.UsesAddressLibrary();
-		v.UsesUpdatedStructs();
-		v.CompatibleVersions({ SKSE::RUNTIME_SSE_1_6_1170, SKSE::RUNTIME_SSE_1_6_1179 });
-		return v;
-	}();
+#ifndef NDEBUG
+	auto sink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
+#else
+	auto path = logger::log_directory();
+	if (!path) {
+		util::report_and_fail("Failed to find standard logging directory"sv);
+	}
 
-	DLLEXPORT bool SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
-	{
-		assert(SKSE::log::log_directory().has_value());
-		auto path = SKSE::log::log_directory().value() / std::filesystem::path(Version::NAME.data() + ".log"s);
-		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path.string(), true);
-		auto log = std::make_shared<spdlog::logger>("global log", std::move(sink));
+	*path /= fmt::format("{}.log"sv, Plugin::NAME);
+	auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
+#endif
 
-		log->set_level(spdlog::level::trace);
-		log->flush_on(spdlog::level::trace);
+#ifndef NDEBUG
+	const auto level = spdlog::level::trace;
+#else
+	const auto level = spdlog::level::info;
+#endif
 
-		spdlog::set_default_logger(std::move(log));
-		spdlog::set_pattern("%s(%#): [%^%l%$] %v", spdlog::pattern_time_type::local);
+	auto log = std::make_shared<spdlog::logger>("global log"s, std::move(sink));
+	log->set_level(level);
+	log->flush_on(level);
 
-		SKSE::log::info("{} v{} -({})", Version::FORMATTED_NAME, Version::STRING, __TIMESTAMP__);
+	spdlog::set_default_logger(std::move(log));
+	spdlog::set_pattern("%s(%#): [%^%l%$] %v"s);
+}
 
+extern "C" DLLEXPORT bool SKSEAPI
+	SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+{
+	a_info->infoVersion = SKSE::PluginInfo::kVersion;
+	a_info->name = Plugin::NAME.data();
+	a_info->version = Plugin::VERSION[0];
+
+	if (a_skse->IsEditor()) {
+		logger::critical("Loaded in editor, marking as incompatible"sv);
+		return false;
+	}
+
+	const auto ver = a_skse->RuntimeVersion();
+	if (ver < SKSE::RUNTIME_SSE_1_5_39) {
+		logger::critical(FMT_STRING("Unsupported runtime version {}"), ver.string());
+		return false;
+	}
+
+	return true;
+}
+
+extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
+{
+		InitializeLog();
 		SKSE::AllocTrampoline(1 << 9, true);
 		SKSE::Init(a_skse, false);
 
@@ -133,5 +156,4 @@ extern "C"
 		SKSE::log::info("Skyrim Souls RE loaded.");
 
 		return true;
-	}
-};
+	};

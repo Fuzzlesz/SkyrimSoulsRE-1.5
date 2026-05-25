@@ -1,0 +1,22 @@
+{
+  "name": "skyrim-souls-re",
+  "version-string": "2.4.0",
+  "description": "Unpauses menus",
+  "homepage": "",
+  "license": "MIT",
+  "dependencies": [
+    "boost-stl-interfaces",
+    "tomlplusplus",
+    "rsm-binary-io",
+    "spdlog",
+    "xbyak",
+    "simpleini"
+  ],
+  "builtin-baseline": "000d1bda1ffa95a73e0b40334fa4103d6f4d3d48",
+  "overrides": [
+    {
+      "name": "xbyak",
+      "version": "6.69"
+    }
+  ]
+}

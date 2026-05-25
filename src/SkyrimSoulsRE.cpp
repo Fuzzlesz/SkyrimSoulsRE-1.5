@@ -33,6 +33,9 @@
 #include "Controls/MenuControlsEx.h"
 #include "Controls/PlayerControlsEx.h"
 
+#undef max
+#undef GetObject
+
 namespace SkyrimSoulsRE
 {
 	using MenuFlag = RE::IMenu::Flag;
