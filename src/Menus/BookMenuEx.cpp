@@ -38,6 +38,6 @@ namespace SkyrimSoulsRE
 		_ProcessMessage = HookUtils::WriteVFunc(vTable, 0x4, &BookMenuEx::ProcessMessage_Hook);
 
 		// Fix for book not appearing
-		HookUtils::SafeWrite(Offsets::Menus::BookMenu::ProcessMessage.address() + 0x76, std::uint16_t(0x9090));  // TODO: 1.6 140884436
+		HookUtils::SafeWrite(Offsets::Menus::BookMenu::ProcessMessage.address() + 0x5E, std::uint16_t(0x9090));  // VERIFIED
 	}
 }

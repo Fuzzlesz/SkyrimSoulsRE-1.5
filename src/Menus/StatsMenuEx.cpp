@@ -159,7 +159,7 @@ namespace SkyrimSoulsRE
 		HookUtils::SafeFill(Offsets::Menus::StatsMenu::CanProcess.address() + 0x46, std::uint8_t(0x90), 6);  // unchanged
 
 		// Prevent muting of certain sounds
-		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::Ctor.address() + 0x4C0, std::uint8_t(0xEB));  // TODO: 1.6 1408EE430
-		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::Dtor.address() + 0x1B3, std::uint8_t(0xEB));  // TODO: 1.6 1408EE673
+		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::Ctor.address() + 0x453, std::uint8_t(0xEB));  // VERIFIED
+		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::Dtor.address() + 0x1BE, std::uint8_t(0xEB));  // VERIFIED
 	}
 }

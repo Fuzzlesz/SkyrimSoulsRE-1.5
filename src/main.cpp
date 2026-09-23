@@ -109,7 +109,7 @@ static void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 }
 
 extern "C" DLLEXPORT bool SKSEAPI
-	SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
 {
 	a_info->infoVersion = SKSE::PluginInfo::kVersion;
 	a_info->name = Plugin::NAME.data();
@@ -131,29 +131,29 @@ extern "C" DLLEXPORT bool SKSEAPI
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
 {
-		InitializeLog();
-		SKSE::AllocTrampoline(1 << 9, true);
-		SKSE::Init(a_skse, false);
+	InitializeLog();
+	SKSE::AllocTrampoline(1 << 9, true);
+	SKSE::Init(a_skse, false);
 
-		const SKSE::MessagingInterface* messaging = SKSE::GetMessagingInterface();
-		if (messaging->RegisterListener("SKSE", MessageHandler))
-		{
-			SKSE::log::info("Messaging interface registration successful.");
-		}
-		else
-		{
-			SKSE::log::critical("Messaging interface registration failed.");
-			return false;
-		}
+	const SKSE::MessagingInterface* messaging = SKSE::GetMessagingInterface();
+	if (messaging->RegisterListener("SKSE", MessageHandler))
+	{
+		SKSE::log::info("Messaging interface registration successful.");
+	}
+	else
+	{
+		SKSE::log::critical("Messaging interface registration failed.");
+		return false;
+	}
 
-		SkyrimSoulsRE::LoadSettings();
+	SkyrimSoulsRE::LoadSettings();
 
-		SkyrimSoulsRE::InstallHooks();
-		_PostDataLoaded = reinterpret_cast<decltype(_PostDataLoaded)>(SkyrimSoulsRE::HookUtils::WriteCall<5>(Offsets::Main::InitData.address() + 0x421, (std::uintptr_t)PostDataLoaded_Hook));  // TODO: 1.6 1405D70B1
+	SkyrimSoulsRE::InstallHooks();
+	_PostDataLoaded = reinterpret_cast<decltype(_PostDataLoaded)>(SkyrimSoulsRE::HookUtils::WriteCall<5>(Offsets::Main::InitData.address() + 0x412, (std::uintptr_t)PostDataLoaded_Hook));  // VERIFIED
 
-		SKSE::log::info("Hooks installed.");
+	SKSE::log::info("Hooks installed.");
 
-		SKSE::log::info("Skyrim Souls RE loaded.");
+	SKSE::log::info("Skyrim Souls RE loaded.");
 
-		return true;
-	};
+	return true;
+};

@@ -403,12 +403,12 @@ namespace SkyrimSoulsRE
 		if (settings->mapMenuAmbientSoundLoop)
 		{
 			HookUtils::SafeWrite(Offsets::Menus::MapMenu::Ctor.address() + 0x538, std::uint8_t(0xEB));  // VERIFIED
-			HookUtils::SafeFill(Offsets::Menus::MapMenu::Dtor.address() + 0x1BB, std::uint8_t(0x90), 5);  // TODO: 1.6 14091303B
+			HookUtils::SafeFill(Offsets::Menus::MapMenu::Dtor.address() + 0x1C6, std::uint8_t(0x90), 5);  // VERIFIED
 		}
 
 		// Re enable certain sounds - the map mutes some effects
-		HookUtils::SafeWrite(Offsets::Menus::MapMenu::Ctor.address() + 0x4F9, std::uint8_t(0xEB));  // TODO: 1.6 140912DE9
-		HookUtils::SafeWrite(Offsets::Menus::MapMenu::Dtor.address() + 0x180, std::uint8_t(0xEB));  // TODO: 1.6 140913000
+		HookUtils::SafeWrite(Offsets::Menus::MapMenu::Ctor.address() + 0x4F9, std::uint8_t(0xEB));  // unchanged
+		HookUtils::SafeWrite(Offsets::Menus::MapMenu::Dtor.address() + 0x18B, std::uint8_t(0xEB));  // VERIFIED
 
 		// Fix controls while journal is open
 		MapInputHandlerEx<RE::MapMoveHandler>::InstallHook(RE::VTABLE_MapMoveHandler[0]);
@@ -429,20 +429,20 @@ namespace SkyrimSoulsRE
 		HookUtils::WriteCall<5>(Offsets::BSAudioManager::Hook.address() + 0x124, (std::uintptr_t)MapMenuAudioHooks::SetListenerRotation_Hook);  // VERIFIED
 
 		// Fix player not updating while the menu is open, causing various issues
-		HookUtils::WriteCall<6>(Offsets::Main::UpdatePlayer.address() + 0x7A, (std::uintptr_t)UpdatePlayer_Hook);  // TODO: 1.6 1405DB5DA
+		HookUtils::WriteCall<6>(Offsets::Main::UpdatePlayer.address() + 0x77, (std::uintptr_t)UpdatePlayer_Hook);  // VERIFIED
 
 		// Hook Sky Job - decouples the map weather from real world weather so the map can't affect gameplay.
 		// Can be disabled for compatibility.
 		if (settings->mapMenuCustomSky)
 		{
-			_SkyUpdate = *reinterpret_cast<Sky_Update_t*>(HookUtils::WriteBranch<5>(Offsets::Job::Sky.address() + 0x33, (std::uintptr_t)Sky_Update_Hook));  // TODO: 1.6 1405DB903
+			_SkyUpdate = *reinterpret_cast<Sky_Update_t*>(HookUtils::WriteBranch<5>(Offsets::Job::Sky.address() + 0x33, (std::uintptr_t)Sky_Update_Hook));  // unchanged
 
 			// Disable sky related stuff when Map Menu opens/closes - we handle it ourselves
-			HookUtils::SafeWrite<std::uint16_t>(Offsets::Menus::MapMenu::EnableMapMode.address() + 0x96, std::uint16_t(0x02E9));  // jmp + nop  // TODO: 1.6 140917F46
-			HookUtils::SafeWrite<std::uint32_t>(Offsets::Menus::MapMenu::EnableMapMode.address() + 0x98, std::uint32_t(0x90000001));  // TODO: 1.6 140917F48
+			HookUtils::SafeWrite<std::uint16_t>(Offsets::Menus::MapMenu::EnableMapMode.address() + 0x8D, std::uint16_t(0xE0E9));  // jmp + nop  // VERIFIED
+			HookUtils::SafeWrite<std::uint32_t>(Offsets::Menus::MapMenu::EnableMapMode.address() + 0x8F, std::uint32_t(0x90000000));  // VERIFIED
 
-			HookUtils::SafeWrite<std::uint16_t>(Offsets::Menus::MapMenu::DisableMapMode.address() + 0x7C, std::uint16_t(0x85E9));  // jmp + nop  // TODO: 1.6 14091814C
-			HookUtils::SafeWrite<std::uint32_t>(Offsets::Menus::MapMenu::DisableMapMode.address() + 0x7E, std::uint32_t(0x90000000));  // TODO: 1.6 14091814E
+			HookUtils::SafeWrite<std::uint16_t>(Offsets::Menus::MapMenu::DisableMapMode.address() + 0x7C, std::uint16_t(0x85E9));  // jmp + nop  // unchanged
+			HookUtils::SafeWrite<std::uint32_t>(Offsets::Menus::MapMenu::DisableMapMode.address() + 0x7E, std::uint32_t(0x90000000));  // unchanged
 		}
 	}
 }

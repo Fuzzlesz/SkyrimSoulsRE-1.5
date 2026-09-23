@@ -146,6 +146,6 @@ namespace SkyrimSoulsRE
 		_ProcessMessage = HookUtils::WriteVFunc(vTable, 0x4, &SleepWaitMenuEx::ProcessMessage_Hook);
 
 		// Hook CanSleep
-		_CanSleep = HookUtils::WriteCall<5>(Offsets::TESFurniture::Activate.address() + 0x16A, &SleepWaitMenuEx::CanSleep_Hook);  // TODO: 1.6 1402285BA
+		_CanSleep = HookUtils::WriteCall<5>(Offsets::TESFurniture::Activate.address() + 0x160, &SleepWaitMenuEx::CanSleep_Hook);  // VERIFIED
 	}
 }

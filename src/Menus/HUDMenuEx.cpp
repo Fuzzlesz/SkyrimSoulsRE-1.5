@@ -83,6 +83,6 @@ namespace SkyrimSoulsRE
 		REL::Relocation<std::uintptr_t> vTable(RE::VTABLE_HUDMenu[0]);
 		_ProcessMessage = HookUtils::WriteVFunc(vTable, 0x4, &HUDMenuEx::ProcessMessage_Hook);
 
-		HookUtils::WriteCall<5>(Offsets::Menus::HUDMenu::ProcessMessage.address() + 0x990, (uintptr_t)SetHudMode_Hook);  // TODO: 1.6 1408ADAC0
+		HookUtils::WriteCall<5>(Offsets::Menus::HUDMenu::ProcessMessage.address() + 0x96C, (uintptr_t)SetHudMode_Hook);  // VERIFIED
 	}
 }

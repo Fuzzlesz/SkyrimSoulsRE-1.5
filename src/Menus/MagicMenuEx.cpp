@@ -265,7 +265,7 @@ namespace SkyrimSoulsRE
 		REL::Relocation<std::uintptr_t> vTableAddActiveEffectVisitor(RE::VTABLE___MagicMenuAddActiveEffectVisitor[0]);
 		_MagicMenuAddActiveEffectVisitor_Visit = HookUtils::WriteVFunc(vTableAddActiveEffectVisitor, 0x1, &MagicMenuEx::MagicMenuAddActiveEffectVisitor_Visit_Hook);
 
-		HookUtils::WriteCall<5>(Offsets::MagicItemList::Reset.address() + 0x3B, (uintptr_t)MagicItemList_Reset_Hook);  // TODO: 1.6 1408CFFFB
+		HookUtils::WriteCall<5>(Offsets::MagicItemList::Reset.address() + 0x30, (uintptr_t)MagicItemList_Reset_Hook);  // VERIFIED
 
 		activeEffectMappings.reserve(128);
 	}

@@ -100,10 +100,10 @@ namespace SkyrimSoulsRE::ItemMenuUpdater
 				mov(rcx, rbx);
 				call(ptr[rip + hookAddress]);
 
-				mov(rbx, qword[rsp + 0x48]);  // TODO: 1.6 1402AB504
-				mov(rbp, qword[rsp + 0x50]);  // TODO: 1.6 1402AB504
-				mov(rsi, qword[rsp + 0x58]);  // TODO: 1.6 1402AB504
-				add(rsp, 0x30);  // TODO: 1.6 1402AB504
+				mov(rbx, qword[rsp + 0x48]);  // unchanged
+				mov(rbp, qword[rsp + 0x50]);  // unchanged
+				mov(rsi, qword[rsp + 0x58]);  // unchanged
+				add(rsp, 0x30);  // unchanged
 				pop(rdi);
 				ret();
 
@@ -115,6 +115,6 @@ namespace SkyrimSoulsRE::ItemMenuUpdater
 		TESObjectREFR_ResetInventory_Code code{ std::uintptr_t(ResetInventory_TESObjectREFR_Hook) };
 		void* codeLoc = SKSE::GetTrampoline().allocate(code);
 
-		HookUtils::WriteBranch<5>(Offsets::ItemMenuUpdater::ResetInventory_TESObjectREFR_Hook.address() + 0x204, codeLoc);  // TODO: 1.6 1402AB504
+		HookUtils::WriteBranch<5>(Offsets::ItemMenuUpdater::ResetInventory_TESObjectREFR_Hook.address() + 0x226, codeLoc);  // VERIFIED
 	}
 }
