@@ -136,8 +136,8 @@ namespace SkyrimSoulsRE
 		static RE::ImageSpaceBaseData* weatherUpdatebaseData = reinterpret_cast<RE::ImageSpaceBaseData*>(Offsets::ImageSpaceManager::WeatherUpdateBaseData.address());
 
 		RE::PlayerRegionState* playerRegionState = RE::PlayerRegionState::GetSingleton();
-		RE::TESRegion* prevRegion = playerRegionState->unk48;
-		playerRegionState->unk48 = nullptr;
+		RE::TESRegion* prevRegion = playerRegionState->lastKnownWeatherRegion;
+		playerRegionState->lastKnownWeatherRegion = nullptr;
 
 		SkyState state;
 		state.SaveState(a_sky);
@@ -194,7 +194,7 @@ namespace SkyrimSoulsRE
 
 		state.RestoreState(a_sky);
 
-		playerRegionState->unk48 = prevRegion;
+		playerRegionState->lastKnownWeatherRegion = prevRegion;
 	}
 
 	void MapMenuEx::MapSky::Finish(RE::Sky* a_sky)
@@ -280,7 +280,7 @@ namespace SkyrimSoulsRE
 				// This has the side-effect that LOD trees will disappear, so re-enable them again (they still won't appear in Map Menu)
 				if (this->worldSpace && this->worldSpace->terrainManager)
 				{
-					this->worldSpace->terrainManager->lodTreesHidden = false;
+					this->worldSpace->terrainManager->cachedCullState.cullTrees = false;
 				}
 
 				cellRenderingUpdateNeeded = false;
