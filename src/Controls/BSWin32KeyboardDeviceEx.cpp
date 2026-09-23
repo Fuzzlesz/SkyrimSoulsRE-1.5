@@ -21,6 +21,6 @@ namespace SkyrimSoulsRE
 
 	void BSWin32KeyboardDeviceEx::InstallHook()
 	{
-		HookUtils::WriteCall<6>(Offsets::BSWin32KeyboardDevice::Process.address() + 0x2CB, (std::uintptr_t)ToUnicode_Hook);
+		HookUtils::WriteCall<6>(Offsets::BSWin32KeyboardDevice::Process.address() + 0x20D, (std::uintptr_t)ToUnicode_Hook);  // VERIFIED
 	}
 }

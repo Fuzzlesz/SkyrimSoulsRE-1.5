@@ -66,13 +66,13 @@ namespace SkyrimSoulsRE
 		switch (a_message.type.get())
 		{
 		case RE::UI_MESSAGE_TYPE::kShow:
-			{
-				RE::GFxValue skyuiVersion;
+		{
+			RE::GFxValue skyuiVersion;
 
-				isSkyUI6 = this->uiMovie->GetVariable(&skyuiVersion, "_global.MagicMenu.SKYUI_VERSION_MAJOR") && skyuiVersion.IsNumber() && static_cast<int32_t>(skyuiVersion.GetNumber()) >= 6;
-				lastState = MagicMenuState{};
-			}
-			break;
+			isSkyUI6 = this->uiMovie->GetVariable(&skyuiVersion, "_global.MagicMenu.SKYUI_VERSION_MAJOR") && skyuiVersion.IsNumber() && static_cast<int32_t>(skyuiVersion.GetNumber()) >= 6;
+			lastState = MagicMenuState{};
+		}
+		break;
 
 		case RE::UI_MESSAGE_TYPE::kUpdate:
 			Update();
@@ -225,8 +225,8 @@ namespace SkyrimSoulsRE
 		if (settings->updateMagicMenuBottomBar)
 		{
 			bool meterUpdateRequired = Util::IsActorValueMeterUpdateNeeded(lastState.health, lastState.maxHealth, newState.health, newState.maxHealth, settings->bottomBarMeterUpdateSteps) ||
-			                           Util::IsActorValueMeterUpdateNeeded(lastState.stamina, lastState.maxStamina, newState.stamina, newState.maxStamina, settings->bottomBarMeterUpdateSteps) ||
-			                           Util::IsActorValueMeterUpdateNeeded(lastState.magicka, lastState.maxMagicka, newState.magicka, newState.maxMagicka, settings->bottomBarMeterUpdateSteps);
+				Util::IsActorValueMeterUpdateNeeded(lastState.stamina, lastState.maxStamina, newState.stamina, newState.maxStamina, settings->bottomBarMeterUpdateSteps) ||
+				Util::IsActorValueMeterUpdateNeeded(lastState.magicka, lastState.maxMagicka, newState.magicka, newState.maxMagicka, settings->bottomBarMeterUpdateSteps);
 
 			if (meterUpdateRequired)
 			{
@@ -265,7 +265,7 @@ namespace SkyrimSoulsRE
 		REL::Relocation<std::uintptr_t> vTableAddActiveEffectVisitor(RE::VTABLE___MagicMenuAddActiveEffectVisitor[0]);
 		_MagicMenuAddActiveEffectVisitor_Visit = HookUtils::WriteVFunc(vTableAddActiveEffectVisitor, 0x1, &MagicMenuEx::MagicMenuAddActiveEffectVisitor_Visit_Hook);
 
-		HookUtils::WriteCall<5>(Offsets::MagicItemList::Reset.address() + 0x3B, (uintptr_t)MagicItemList_Reset_Hook);
+		HookUtils::WriteCall<5>(Offsets::MagicItemList::Reset.address() + 0x3B, (uintptr_t)MagicItemList_Reset_Hook);  // TODO: 1.6 1408CFFFB
 
 		activeEffectMappings.reserve(128);
 	}

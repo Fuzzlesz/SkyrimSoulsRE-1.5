@@ -8,14 +8,14 @@ namespace SkyrimSoulsRE
 		switch (a_message.type.get())
 		{
 		case RE::UI_MESSAGE_TYPE::kShow:
-			{
-				RE::GFxValue val = true;
+		{
+			RE::GFxValue val = true;
 
-				this->uiMovie->SetVariable("_root.HUDMovieBaseInstance.StealthMeterInstance.InventoryMode", &val);
-				this->uiMovie->SetVariable("_root.HUDMovieBaseInstance.StealthMeterInstance.SneakTextHolder.SneakTextClip.InventoryMode", &val);
-				this->uiMovie->SetVariable("_root.HUDMovieBaseInstance.StealthMeterInstance.SneakTextHolder.SneakTextClip.SneakTextInstance.InventoryMode", &val);
-			}
-			break;
+			this->uiMovie->SetVariable("_root.HUDMovieBaseInstance.StealthMeterInstance.InventoryMode", &val);
+			this->uiMovie->SetVariable("_root.HUDMovieBaseInstance.StealthMeterInstance.SneakTextHolder.SneakTextClip.InventoryMode", &val);
+			this->uiMovie->SetVariable("_root.HUDMovieBaseInstance.StealthMeterInstance.SneakTextHolder.SneakTextClip.SneakTextInstance.InventoryMode", &val);
+		}
+		break;
 		}
 
 		return _ProcessMessage(this, a_message);
@@ -83,6 +83,6 @@ namespace SkyrimSoulsRE
 		REL::Relocation<std::uintptr_t> vTable(RE::VTABLE_HUDMenu[0]);
 		_ProcessMessage = HookUtils::WriteVFunc(vTable, 0x4, &HUDMenuEx::ProcessMessage_Hook);
 
-		HookUtils::WriteCall<5>(Offsets::Menus::HUDMenu::ProcessMessage.address() + 0x990, (uintptr_t)SetHudMode_Hook);
+		HookUtils::WriteCall<5>(Offsets::Menus::HUDMenu::ProcessMessage.address() + 0x990, (uintptr_t)SetHudMode_Hook);  // TODO: 1.6 1408ADAC0
 	}
 }

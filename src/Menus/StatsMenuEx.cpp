@@ -119,8 +119,8 @@ namespace SkyrimSoulsRE
 
 		// Fix level up when sleeping using survival mode
 		// We replace a tail-call jump with a normal call, so the rest of the function can execute as well (this will remove the sleeping flag).
-		HookUtils::SafeFill(Offsets::Menus::StatsMenu::OpenStatsMenuAfterSleep_Hook.address() + 0x65, std::uint8_t(0x90), 5);
-		HookUtils::WriteCall<5>(Offsets::Menus::StatsMenu::OpenStatsMenuAfterSleep_Hook.address() + 0x6A, OpenStatsMenuAfterSleep_Hook);
+		HookUtils::SafeFill(Offsets::Menus::StatsMenu::OpenStatsMenuAfterSleep_Hook.address() + 0x65, std::uint8_t(0x90), 5);  // unchanged
+		HookUtils::WriteCall<5>(Offsets::Menus::StatsMenu::OpenStatsMenuAfterSleep_Hook.address() + 0x6A, OpenStatsMenuAfterSleep_Hook);  // unchanged
 
 		// Make StatsMenu check our sleeping variable
 		struct SleepCheck_Code : Xbyak::CodeGenerator
@@ -148,18 +148,18 @@ namespace SkyrimSoulsRE
 			}
 		};
 
-		SleepCheck_Code code{ std::uintptr_t(Offsets::Menus::StatsMenu::ProcessMessage.address() + 0xFC9), std::uintptr_t(Offsets::Menus::StatsMenu::ProcessMessage.address() + 0x102D) };
+		SleepCheck_Code code{ std::uintptr_t(Offsets::Menus::StatsMenu::ProcessMessage.address() + 0xF45), std::uintptr_t(Offsets::Menus::StatsMenu::ProcessMessage.address() + 0xFA9) };  // VERIFIED
 		void* codeLoc = SKSE::GetTrampoline().allocate(code);
-		HookUtils::WriteBranch<5>(Offsets::Menus::StatsMenu::ProcessMessage.address() + 0xFC0, codeLoc);
+		HookUtils::WriteBranch<5>(Offsets::Menus::StatsMenu::ProcessMessage.address() + 0xF3C, codeLoc);  // VERIFIED
 
 		// Prevent setting kFreezeFrameBackground flag
-		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::ProcessMessage.address() + 0xA10, std::uint32_t(0x90909090));
+		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::ProcessMessage.address() + 0xAEC, std::uint32_t(0x90909090));  // VERIFIED
 
 		// Fix for controls not working
-		HookUtils::SafeFill(Offsets::Menus::StatsMenu::CanProcess.address() + 0x46, std::uint8_t(0x90), 6);
+		HookUtils::SafeFill(Offsets::Menus::StatsMenu::CanProcess.address() + 0x46, std::uint8_t(0x90), 6);  // unchanged
 
 		// Prevent muting of certain sounds
-		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::Ctor.address() + 0x4C0, std::uint8_t(0xEB));
-		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::Dtor.address() + 0x1B3, std::uint8_t(0xEB));
+		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::Ctor.address() + 0x4C0, std::uint8_t(0xEB));  // TODO: 1.6 1408EE430
+		HookUtils::SafeWrite(Offsets::Menus::StatsMenu::Dtor.address() + 0x1B3, std::uint8_t(0xEB));  // TODO: 1.6 1408EE673
 	}
 }

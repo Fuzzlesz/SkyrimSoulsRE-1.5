@@ -149,7 +149,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
 		SkyrimSoulsRE::LoadSettings();
 
 		SkyrimSoulsRE::InstallHooks();
-		_PostDataLoaded = reinterpret_cast<decltype(_PostDataLoaded)>(SkyrimSoulsRE::HookUtils::WriteCall<5>(Offsets::Main::InitData.address() + 0x421, (std::uintptr_t)PostDataLoaded_Hook));
+		_PostDataLoaded = reinterpret_cast<decltype(_PostDataLoaded)>(SkyrimSoulsRE::HookUtils::WriteCall<5>(Offsets::Main::InitData.address() + 0x421, (std::uintptr_t)PostDataLoaded_Hook));  // TODO: 1.6 1405D70B1
 
 		SKSE::log::info("Hooks installed.");
 
