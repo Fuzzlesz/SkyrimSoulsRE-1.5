@@ -96,6 +96,28 @@ static void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 
 extern "C"
 {
+	DLLEXPORT bool SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+	{
+		a_info->infoVersion = SKSE::PluginInfo::kVersion;
+		a_info->name = Version::NAME.data();
+		a_info->version = REL::Version{ Version::MAJOR, Version::MINOR, Version::PATCH, 0 }.pack();
+
+		if (a_skse->IsEditor())
+		{
+			logger::critical("Loaded in editor, marking as incompatible"sv);
+			return false;
+		}
+
+		const auto ver = a_skse->RuntimeVersion();
+		if (ver < SKSE::RUNTIME_SSE_1_5_39)
+		{
+			logger::critical("Unsupported runtime version {}", ver.string());
+			return false;
+		}
+
+		return true;
+	}
+
 	DLLEXPORT bool SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
 	{
 		SKSE::InitInfo initInfo{};
@@ -121,7 +143,7 @@ extern "C"
 		SkyrimSoulsRE::LoadSettings();
 
 		SkyrimSoulsRE::InstallHooks();
-		_PostDataLoaded = reinterpret_cast<decltype(_PostDataLoaded)>(SkyrimSoulsRE::HookUtils::WriteCall<5>(Offsets::Main::InitData.address() + 0x421, (std::uintptr_t)PostDataLoaded_Hook));
+		_PostDataLoaded = reinterpret_cast<decltype(_PostDataLoaded)>(SkyrimSoulsRE::HookUtils::WriteCall<5>(Offsets::Main::InitData.address() + 0x412, (std::uintptr_t)PostDataLoaded_Hook));
 
 		logger::info("Hooks installed.");
 

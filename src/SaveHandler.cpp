@@ -49,10 +49,10 @@ namespace SkyrimSoulsRE
 	void SaveHandler::InstallHook()
 	{
 		// Every user initiated save ends up in BGSSaveLoadManager::Save, so the call sites are hooked directly
-		_SaveGame = HookUtils::WriteCall<5>(Offsets::Menus::Console::SaveGameHandler.address() + 0xC4, (std::uintptr_t)SaveGame_Hook);  // Save from console
-		HookUtils::WriteBranch<5>(Offsets::UISaveLoadManager::SaveGame.address() + 0x2B, (std::uintptr_t)SaveGame_Hook);                // New save
-		HookUtils::WriteCall<5>(Offsets::BGSSaveLoadFileEntry::Save.address() + 0x3E, (std::uintptr_t)SaveGame_Hook);                   // Overwriting an existing save
-		HookUtils::WriteCall<5>(Offsets::BGSSaveLoadFileEntry::Save.address() + 0x60, (std::uintptr_t)SaveGame_Hook);                   // Overwriting an autosave/quicksave
+		_SaveGame = HookUtils::WriteCall<5>(Offsets::Menus::Console::SaveGameHandler.address() + 0xC4, (std::uintptr_t)SaveGame_Hook);  // Save from console                  // VERIFIED
+		HookUtils::WriteBranch<5>(Offsets::UISaveLoadManager::SaveGame.address() + 0x2B, (std::uintptr_t)SaveGame_Hook);                // New save                           // VERIFIED
+		HookUtils::WriteCall<5>(Offsets::BGSSaveLoadFileEntry::Save.address() + 0x3E, (std::uintptr_t)SaveGame_Hook);                   // Overwriting an existing save       // VERIFIED
+		HookUtils::WriteCall<5>(Offsets::BGSSaveLoadFileEntry::Save.address() + 0x60, (std::uintptr_t)SaveGame_Hook);                   // Overwriting an autosave/quicksave  // VERIFIED
 
 		struct ProcessEvents_Code : Xbyak::CodeGenerator
 		{
@@ -85,11 +85,11 @@ namespace SkyrimSoulsRE
 
 		ProcessEvents_Code code{
 			std::uintptr_t(BGSSaveLoadManager_ProcessEvents_Hook),
-			Offsets::BGSSaveLoadManager::ProcessEvents.address() + 0x72A,
-			Offsets::BGSSaveLoadManager::ProcessEvents.address() + 0x5E1
+			Offsets::BGSSaveLoadManager::ProcessEvents.address() + 0x436,  // VERIFIED
+			Offsets::BGSSaveLoadManager::ProcessEvents.address() + 0x348   // VERIFIED
 		};
 		void* codeLoc = REL::GetTrampoline().allocate(code);
 
-		HookUtils::WriteBranch<6>(Offsets::BGSSaveLoadManager::ProcessEvents.address() + 0x5D5, codeLoc);
+		HookUtils::WriteBranch<6>(Offsets::BGSSaveLoadManager::ProcessEvents.address() + 0x33C, codeLoc);  // VERIFIED
 	}
 }

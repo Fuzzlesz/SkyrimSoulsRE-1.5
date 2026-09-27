@@ -5,13 +5,13 @@ namespace Offsets
 {
 	namespace BGSSaveLoadFileEntry
 	{
-		static constexpr REL::ID Save(static_cast<std::uint64_t>(35533));  // + 0x3E; + 0x60
+		static constexpr REL::ID Save(static_cast<std::uint64_t>(34613));  // + 0x3E; + 0x60                                      // VERIFIED
 	}
 
 	namespace BGSSaveLoadManager
 	{
-		static constexpr REL::ID ProcessEvents(static_cast<std::uint64_t>(35772));
-		static constexpr REL::ID RequestSave(static_cast<std::uint64_t>(35769));
+		static constexpr REL::ID ProcessEvents(static_cast<std::uint64_t>(34862));                                                // VERIFIED
+		static constexpr REL::ID RequestSave(static_cast<std::uint64_t>(34859));                                                  // VERIFIED
 	}
 
 	namespace BGSTerrainManager
@@ -88,7 +88,7 @@ namespace Offsets
 
 		namespace Console
 		{
-			static constexpr REL::ID SaveGameHandler(static_cast<std::uint64_t>(22940));
+			static constexpr REL::ID SaveGameHandler(static_cast<std::uint64_t>(22465));  // + 0xC4                               // VERIFIED
 		}
 
 		namespace ContainerMenu
@@ -199,6 +199,6 @@ namespace Offsets
 
 	namespace UISaveLoadManager
 	{
-		static constexpr REL::ID SaveGame(static_cast<std::uint64_t>(52923));  // + 0x2B
+		static constexpr REL::ID SaveGame(static_cast<std::uint64_t>(52037));  // + 0x2B                                          // VERIFIED
 	}
 }
