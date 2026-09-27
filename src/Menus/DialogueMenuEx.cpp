@@ -48,6 +48,6 @@ namespace SkyrimSoulsRE
 		REL::Relocation<std::uintptr_t> vTable(RE::VTABLE_DialogueMenu[0]);
 		_AdvanceMovie = HookUtils::WriteVFunc(vTable, 0x5, &DialogueMenuEx::AdvanceMovie_Hook);
 
-		HookUtils::WriteCall<5>(Offsets::Menus::DialogueMenu::UpdateAutoCloseTimer_Hook.address() + 0x6E8, (uintptr_t)UpdateAutoCloseTimer_Hook);
+		HookUtils::WriteCall<5>(Offsets::Menus::DialogueMenu::UpdateAutoCloseTimer_Hook.address() + 0x4F9, (uintptr_t)UpdateAutoCloseTimer_Hook);  // VERIFIED
 	}
 }

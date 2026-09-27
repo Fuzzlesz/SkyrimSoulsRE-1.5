@@ -13,9 +13,9 @@ namespace
 	void CheckEngineFixes(SkyrimSoulsRE::Settings* a_settings)
 	{
 		bool engineFixesPresent = REX::W32::GetModuleHandleA("EngineFixes.dll") &&
-		                          SkyrimSoulsRE::EngineFixesConfig::load_config("Data/SKSE/Plugins/EngineFixes.toml") &&
-		                          SkyrimSoulsRE::EngineFixesConfig::patchMemoryManager &&
-		                          SkyrimSoulsRE::EngineFixesConfig::fixGlobalTime;
+			SkyrimSoulsRE::EngineFixesConfig::load_config("Data/SKSE/Plugins/EngineFixes.toml") &&
+			SkyrimSoulsRE::EngineFixesConfig::patchMemoryManager &&
+			SkyrimSoulsRE::EngineFixesConfig::fixGlobalTime;
 
 		if (engineFixesPresent)
 		{
@@ -84,29 +84,18 @@ static void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 	switch (a_msg->type)
 	{
 	case SKSE::MessagingInterface::kPostLoad:
-		{
-			SkyrimSoulsRE::Settings* settings = SkyrimSoulsRE::Settings::GetSingleton();
-			CheckEngineFixes(settings);
-			CheckModCompatibility(settings);
-			SkyrimSoulsRE::InstallModConfigUI();
-		}
-		break;
+	{
+		SkyrimSoulsRE::Settings* settings = SkyrimSoulsRE::Settings::GetSingleton();
+		CheckEngineFixes(settings);
+		CheckModCompatibility(settings);
+		SkyrimSoulsRE::InstallModConfigUI();
+	}
+	break;
 	}
 }
 
 extern "C"
 {
-	DLLEXPORT SKSE::PluginVersionData SKSEPlugin_Version = []() {
-		SKSE::PluginVersionData v{};
-		v.PluginVersion(REL::Version{ Version::MAJOR, Version::MINOR, Version::PATCH, 0 });
-		v.PluginName(Version::NAME);
-		v.AuthorName(Version::AUTHOR);
-		v.UsesAddressLibrary();
-		v.UsesUpdatedStructs();
-		v.CompatibleVersions({ SKSE::RUNTIME_SSE_1_7_104 });
-		return v;
-	}();
-
 	DLLEXPORT bool SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
 	{
 		SKSE::InitInfo initInfo{};

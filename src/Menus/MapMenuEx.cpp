@@ -430,20 +430,20 @@ namespace SkyrimSoulsRE
 		_ProcessMessage = HookUtils::WriteVFunc(vTable, 0x4, &MapMenuEx::ProcessMessage_Hook);
 
 		// Prevent setting kFreezeFrameBackground flag when opening local map
-		HookUtils::SafeWrite(Offsets::Menus::MapMenu::LocalMapUpdaterFunc.address() + 0x53, std::uint32_t(0x90909090));
-		HookUtils::SafeWrite(Offsets::Menus::MapMenu::LocalMapUpdaterFunc.address() + 0x9D, std::uint16_t(0x9090));
-		HookUtils::SafeWrite(Offsets::Menus::MapMenu::LocalMapUpdaterFunc.address() + 0x9F, std::uint8_t(0x90));
+		HookUtils::SafeWrite(Offsets::Menus::MapMenu::LocalMapUpdaterFunc.address() + 0x53, std::uint32_t(0x90909090));  // unchanged
+		HookUtils::SafeWrite(Offsets::Menus::MapMenu::LocalMapUpdaterFunc.address() + 0x9D, std::uint16_t(0x9090));  // unchanged
+		HookUtils::SafeWrite(Offsets::Menus::MapMenu::LocalMapUpdaterFunc.address() + 0x9F, std::uint8_t(0x90));  // unchanged
 
 		// Disable map menu background sound
 		if (settings->mapMenuAmbientSoundLoop)
 		{
-			HookUtils::SafeWrite(Offsets::Menus::MapMenu::Ctor.address() + 0x52D, std::uint8_t(0xEB));
-			HookUtils::SafeFill(Offsets::Menus::MapMenu::Dtor.address() + 0x1BB, std::uint8_t(0x90), 5);
+			HookUtils::SafeWrite(Offsets::Menus::MapMenu::Ctor.address() + 0x538, std::uint8_t(0xEB));  // VERIFIED
+			HookUtils::SafeFill(Offsets::Menus::MapMenu::Dtor.address() + 0x1C6, std::uint8_t(0x90), 5);  // VERIFIED
 		}
 
 		// Re enable certain sounds - the map mutes some effects
-		HookUtils::SafeWrite(Offsets::Menus::MapMenu::Ctor.address() + 0x4F9, std::uint8_t(0xEB));
-		HookUtils::SafeWrite(Offsets::Menus::MapMenu::Dtor.address() + 0x180, std::uint8_t(0xEB));
+		HookUtils::SafeWrite(Offsets::Menus::MapMenu::Ctor.address() + 0x4F9, std::uint8_t(0xEB));  // unchanged
+		HookUtils::SafeWrite(Offsets::Menus::MapMenu::Dtor.address() + 0x18B, std::uint8_t(0xEB));  // VERIFIED
 
 		// Fix controls while journal is open
 		MapInputHandlerEx<RE::MapMoveHandler>::InstallHook(RE::VTABLE_MapMoveHandler[0]);
@@ -452,32 +452,32 @@ namespace SkyrimSoulsRE
 
 		// Prevent TerrainManager from updating while the menu is open.
 		// This prevents child worldspaces from rendering on top of their parents. Possibly avoids other issues as well.
-		_TerrainManagerUpdate = *reinterpret_cast<TerrainManagerUpdate_t*>(HookUtils::WriteCall<5>(Offsets::BGSTerrainManager::TerrainManager_UpdateFunc.address() + 0x6E, (std::uintptr_t)BGSTerrainManager_Update_Hook));
+		_TerrainManagerUpdate = *reinterpret_cast<TerrainManagerUpdate_t*>(HookUtils::WriteCall<5>(Offsets::BGSTerrainManager::TerrainManager_UpdateFunc.address() + 0x5D, (std::uintptr_t)BGSTerrainManager_Update_Hook));  // unchanged
 
 		// Fix for flickering/non-moving clouds
-		_UpdateClouds = *reinterpret_cast<UpdateClouds_t*>(HookUtils::WriteCall<5>(Offsets::Menus::MapMenu::UpdateClouds_Hook.address() + 0x10E, (std::uintptr_t)UpdateClouds_Hook));
+		_UpdateClouds = *reinterpret_cast<UpdateClouds_t*>(HookUtils::WriteCall<5>(Offsets::Menus::MapMenu::UpdateClouds_Hook.address() + 0x107, (std::uintptr_t)UpdateClouds_Hook));  // VERIFIED
 
 		// By default if the menu is unpaused and the player opens the map, audio will stop working.
 		// This is because the listener position is linked to the camera, which is now far up in the sky.
 		// These functions set position and rotation back to its expected values manually.
-		HookUtils::WriteCall<5>(Offsets::BSAudioManager::Hook.address() + 0xD7, (std::uintptr_t)MapMenuAudioHooks::SetListenerPosition_Hook);
-		HookUtils::WriteCall<5>(Offsets::BSAudioManager::Hook.address() + 0x13F, (std::uintptr_t)MapMenuAudioHooks::SetListenerRotation_Hook);
+		HookUtils::WriteCall<5>(Offsets::BSAudioManager::Hook.address() + 0xBC, (std::uintptr_t)MapMenuAudioHooks::SetListenerPosition_Hook);  // VERIFIED
+		HookUtils::WriteCall<5>(Offsets::BSAudioManager::Hook.address() + 0x124, (std::uintptr_t)MapMenuAudioHooks::SetListenerRotation_Hook);  // VERIFIED
 
 		// Fix player not updating while the menu is open, causing various issues
-		HookUtils::WriteCall<6>(Offsets::Main::UpdatePlayer.address() + 0x7A, (std::uintptr_t)UpdatePlayer_Hook);
+		HookUtils::WriteCall<6>(Offsets::Main::UpdatePlayer.address() + 0x77, (std::uintptr_t)UpdatePlayer_Hook);  // VERIFIED
 
 		// Hook Sky Job - decouples the map weather from real world weather so the map can't affect gameplay.
 		// Can be disabled for compatibility.
 		if (settings->mapMenuCustomSky)
 		{
-			_SkyUpdate = *reinterpret_cast<Sky_Update_t*>(HookUtils::WriteBranch<5>(Offsets::Job::Sky.address() + 0x33, (std::uintptr_t)Sky_Update_Hook));
+			_SkyUpdate = *reinterpret_cast<Sky_Update_t*>(HookUtils::WriteBranch<5>(Offsets::Job::Sky.address() + 0x33, (std::uintptr_t)Sky_Update_Hook));  // unchanged
 
 			// Disable sky related stuff when Map Menu opens/closes - we handle it ourselves
-			HookUtils::SafeWrite<std::uint16_t>(Offsets::Menus::MapMenu::EnableMapMode.address() + 0x96, std::uint16_t(0x02E9));  // jmp + nop
-			HookUtils::SafeWrite<std::uint32_t>(Offsets::Menus::MapMenu::EnableMapMode.address() + 0x98, std::uint32_t(0x90000001));
+			HookUtils::SafeWrite<std::uint16_t>(Offsets::Menus::MapMenu::EnableMapMode.address() + 0x8D, std::uint16_t(0xE0E9));  // jmp + nop  // VERIFIED
+			HookUtils::SafeWrite<std::uint32_t>(Offsets::Menus::MapMenu::EnableMapMode.address() + 0x8F, std::uint32_t(0x90000000));  // VERIFIED
 
-			HookUtils::SafeWrite<std::uint16_t>(Offsets::Menus::MapMenu::DisableMapMode.address() + 0x7C, std::uint16_t(0x85E9));  // jmp + nop
-			HookUtils::SafeWrite<std::uint32_t>(Offsets::Menus::MapMenu::DisableMapMode.address() + 0x7E, std::uint32_t(0x90000000));
+			HookUtils::SafeWrite<std::uint16_t>(Offsets::Menus::MapMenu::DisableMapMode.address() + 0x7C, std::uint16_t(0x85E9));  // jmp + nop  // unchanged
+			HookUtils::SafeWrite<std::uint32_t>(Offsets::Menus::MapMenu::DisableMapMode.address() + 0x7E, std::uint32_t(0x90000000));  // unchanged
 		}
 	}
 }

@@ -53,9 +53,9 @@ namespace SkyrimSoulsRE::MenuProcessing
 		_ExecuteConsoleCommands = Offsets::Misc::ExecuteConsoleCommands.address();
 
 		// Disable UI job
-		HookUtils::SafeWrite(Offsets::Job::UI.address() + 0xB, std::uint8_t(0xEB));
+		HookUtils::SafeWrite(Offsets::Job::UI.address() + 0xB, std::uint8_t(0xEB));  // unchanged
 
 		// Hook UI processing
-		HookUtils::WriteCall<5>(Offsets::Main::Update.address() + 0xAF1, (uintptr_t)MainThread_Hook);
+		HookUtils::WriteCall<5>(Offsets::Main::Update.address() + 0x61A, (uintptr_t)MainThread_Hook);  // VERIFIED
 	}
 }

@@ -10,42 +10,42 @@ namespace SkyrimSoulsRE
 		switch (a_message.type.get())
 		{
 		case RE::UI_MESSAGE_TYPE::kShow:
-			{
-				bedReferenceMessageReceived = false;
-				lastTimeDateString[0] = '\0';
+		{
+			bedReferenceMessageReceived = false;
+			lastTimeDateString[0] = '\0';
 
-				RE::FxDelegate* dlg = this->fxDelegate.get();
-				_StartSleepWait = dlg->callbacks.GetAlt("OK")->callback;
-				dlg->callbacks.GetAlt("OK")->callback = StartSleepWait_Hook;
-			}
-			break;
+			RE::FxDelegate* dlg = this->fxDelegate.get();
+			_StartSleepWait = dlg->callbacks.GetAlt("OK")->callback;
+			dlg->callbacks.GetAlt("OK")->callback = StartSleepWait_Hook;
+		}
+		break;
 
 		case RE::UI_MESSAGE_TYPE::kUpdate:
+		{
+			RE::UIMessageQueue::GetSingleton()->AddMessage(RE::HUDMenu::MENU_NAME, RE::UI_MESSAGE_TYPE::kUpdate, nullptr);
+
+			if (!isActive)
 			{
-				RE::UIMessageQueue::GetSingleton()->AddMessage(RE::HUDMenu::MENU_NAME, RE::UI_MESSAGE_TYPE::kUpdate, nullptr);
-
-				if (!isActive)
-				{
-					Update();
-				}
-
-				if (bedReferenceMessageReceived && !isActive)
-				{
-					AutoCloseManager::GetSingleton()->CheckAutoClose(RE::SleepWaitMenu::MENU_NAME);
-				}
-				break;
+				Update();
 			}
+
+			if (bedReferenceMessageReceived && !isActive)
+			{
+				AutoCloseManager::GetSingleton()->CheckAutoClose(RE::SleepWaitMenu::MENU_NAME);
+			}
+			break;
+		}
 
 		case SET_BED_REFERENCE_MESSAGE_TYPE:
-			{
-				auto messageData = static_cast<RE::BSUIMessageData*>(a_message.data);
-				RE::RefHandle bedRefHandle = static_cast<RE::RefHandle>(messageData->data.u);
+		{
+			auto messageData = static_cast<RE::BSUIMessageData*>(a_message.data);
+			RE::RefHandle bedRefHandle = static_cast<RE::RefHandle>(messageData->data.u);
 
-				auto* autoCloseManager = AutoCloseManager::GetSingleton();
-				autoCloseManager->InitAutoClose(RE::SleepWaitMenu::MENU_NAME, bedRefHandle, true);
-				bedReferenceMessageReceived = true;
-				break;
-			}
+			auto* autoCloseManager = AutoCloseManager::GetSingleton();
+			autoCloseManager->InitAutoClose(RE::SleepWaitMenu::MENU_NAME, bedRefHandle, true);
+			bedReferenceMessageReceived = true;
+			break;
+		}
 		}
 #pragma warning(pop)
 
@@ -146,6 +146,6 @@ namespace SkyrimSoulsRE
 		_ProcessMessage = HookUtils::WriteVFunc(vTable, 0x4, &SleepWaitMenuEx::ProcessMessage_Hook);
 
 		// Hook CanSleep
-		_CanSleep = HookUtils::WriteCall<5>(Offsets::TESFurniture::Activate.address() + 0x16A, &SleepWaitMenuEx::CanSleep_Hook);
+		_CanSleep = HookUtils::WriteCall<5>(Offsets::TESFurniture::Activate.address() + 0x160, &SleepWaitMenuEx::CanSleep_Hook);  // VERIFIED
 	}
 }

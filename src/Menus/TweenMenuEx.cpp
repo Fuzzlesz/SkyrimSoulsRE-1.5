@@ -9,13 +9,13 @@ namespace SkyrimSoulsRE
 		switch (a_message.type.get())
 		{
 		case RE::UI_MESSAGE_TYPE::kShow:
-			{
-				lastState = GetUpdatedState();
+		{
+			lastState = GetUpdatedState();
 
-				RE::GFxValue skyuiVersion;
-				isSkyUI6 = this->uiMovie->GetVariable(&skyuiVersion, "_global.TweenMenu.SKYUI_VERSION_MAJOR") && skyuiVersion.IsNumber() && static_cast<int32_t>(skyuiVersion.GetNumber()) >= 6;
-			}
-			break;
+			RE::GFxValue skyuiVersion;
+			isSkyUI6 = this->uiMovie->GetVariable(&skyuiVersion, "_global.TweenMenu.SKYUI_VERSION_MAJOR") && skyuiVersion.IsNumber() && static_cast<int32_t>(skyuiVersion.GetNumber()) >= 6;
+		}
+		break;
 
 		case RE::UI_MESSAGE_TYPE::kUpdate:
 			Update();
@@ -139,6 +139,6 @@ namespace SkyrimSoulsRE
 
 		//Fix for camera movement
 		std::uint8_t codes[] = { 0x90, 0x90, 0x90, 0x90, 0x90 };
-		HookUtils::SafeWrite(Offsets::Menus::TweenMenu::ProcessMessage.address() + 0x4F3, codes, sizeof(codes));
+		HookUtils::SafeWrite(Offsets::Menus::TweenMenu::ProcessMessage.address() + 0x5A5, codes, sizeof(codes));  // VERIFIED
 	}
 }

@@ -60,11 +60,11 @@ namespace SkyrimSoulsRE::ItemMenuUpdater
 	}
 
 	// Update after RemoveAllItems
-	static void RemoveAllItems_Hook(RE::BSExtraData* a_unk1, std::uint32_t a_unk2, void* a_unk3, RE::TESObjectREFR* a_containerRef, std::uint64_t a_unk5, std::uint32_t a_unk6, void* a_unk7, void* a_unk8)
+	static void RemoveAllItems_Hook(RE::BSExtraData* a_unk1, RE::TESObjectREFR* a_containerRef, void* a_unk3, std::uint64_t a_unk4, std::uint32_t a_unk5, void* a_unk6, void* a_unk7)
 	{
 		using func_t = decltype(&RemoveAllItems_Hook);
 		REL::Relocation<func_t> func(Offsets::ItemMenuUpdater::RemoveAllItems);
-		func(a_unk1, a_unk2, a_unk3, a_containerRef, a_unk5, a_unk6, a_unk7, a_unk8);
+		func(a_unk1, a_containerRef, a_unk3, a_unk4, a_unk5, a_unk6, a_unk7);
 
 		RE::PlayerCharacter* player = RE::PlayerCharacter::GetSingleton();
 
@@ -85,8 +85,11 @@ namespace SkyrimSoulsRE::ItemMenuUpdater
 
 	void InstallHook()
 	{
-		HookUtils::WriteCall<5>(Offsets::ItemMenuUpdater::RemoveAllItems_Hook1.address() + 0x3A, (std::uintptr_t)RemoveAllItems_Hook);
-		HookUtils::WriteCall<5>(Offsets::ItemMenuUpdater::RemoveAllItems_Hook2.address() + 0x55, (std::uintptr_t)RemoveAllItems_Hook);
+		HookUtils::WriteCall<5>(Offsets::ItemMenuUpdater::RemoveAllItems_Hook1.address() + 0x16, (std::uintptr_t)RemoveAllItems_Hook);  // VERIFIED
+		HookUtils::WriteCall<5>(Offsets::ItemMenuUpdater::RemoveAllItems_Hook2.address() + 0x36, (std::uintptr_t)RemoveAllItems_Hook);  // VERIFIED
+		HookUtils::WriteCall<5>(Offsets::ItemMenuUpdater::RemoveAllItems_Hook3.address() + 0xBA, (std::uintptr_t)RemoveAllItems_Hook);  // VERIFIED
+		HookUtils::WriteCall<5>(Offsets::ItemMenuUpdater::RemoveAllItems_Hook4.address() + 0x230, (std::uintptr_t)RemoveAllItems_Hook);  // VERIFIED
+		HookUtils::WriteCall<5>(Offsets::ItemMenuUpdater::RemoveAllItems_Hook5.address() + 0x46, (std::uintptr_t)RemoveAllItems_Hook);  // VERIFIED
 
 		struct TESObjectREFR_ResetInventory_Code : Xbyak::CodeGenerator
 		{
@@ -97,10 +100,10 @@ namespace SkyrimSoulsRE::ItemMenuUpdater
 				mov(rcx, rbx);
 				call(ptr[rip + hookAddress]);
 
-				mov(rbx, qword[rsp + 0x48]);
-				mov(rbp, qword[rsp + 0x50]);
-				mov(rsi, qword[rsp + 0x58]);
-				add(rsp, 0x30);
+				mov(rbx, qword[rsp + 0x48]);  // unchanged
+				mov(rbp, qword[rsp + 0x50]);  // unchanged
+				mov(rsi, qword[rsp + 0x58]);  // unchanged
+				add(rsp, 0x30);  // unchanged
 				pop(rdi);
 				ret();
 
@@ -112,6 +115,6 @@ namespace SkyrimSoulsRE::ItemMenuUpdater
 		TESObjectREFR_ResetInventory_Code code{ std::uintptr_t(ResetInventory_TESObjectREFR_Hook) };
 		void* codeLoc = REL::GetTrampoline().allocate(code);
 
-		HookUtils::WriteBranch<5>(Offsets::ItemMenuUpdater::ResetInventory_TESObjectREFR_Hook.address() + 0x204, codeLoc);
+		HookUtils::WriteBranch<5>(Offsets::ItemMenuUpdater::ResetInventory_TESObjectREFR_Hook.address() + 0x226, codeLoc);  // VERIFIED
 	}
 }
